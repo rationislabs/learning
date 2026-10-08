@@ -1,0 +1,47 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  name: 'agent pool'  # Uses your local agent
+# Remove: vmImage: 'ubuntu-latest'
+
+steps:
+# Lint YAML files (your pipeline configs)
+- script: |
+    pip install yamllint
+    yamllint azure-pipelines.yml || true
+  displayName: 'Lint YAML Files'
+
+# Lint PySpark + SQL in Jupyter notebooks (.ipynb)
+- script: |
+    pip install nbqa ruff sqlfluff
+    
+    # Ruff = Fastest Python/PySpark linter
+    nbqa ruff check --line-length=120 ./**/*.ipynb || true
+    
+    # SQL linter for Spark SQL in notebooks
+    nbqa sqlfluff lint --dialect spark ./**/*.ipynb || true
+  displayName: 'Lint PySpark & SQL in Notebooks'
+
+
+# Test Databricks connection
+- script: |
+    databricks workspace list / || true
+  displayName: 'Test Databricks Connection'
+  env:
+    DATABRICKS_HOST: $(DATABRICKS_HOST)
+    DATABRICKS_TOKEN: $(DATABRICKS_TOKEN)
+
+# Run your medallion pipeline
+- script: |
+    databricks jobs run-now $(DATABRICKS_JOB_ID)
+  displayName: 'Run Raw→Bronze→Silver→Gold'
+  env:
+    DATABRICKS_HOST: $(DATABRICKS_HOST)
+    DATABRICKS_TOKEN: $(DATABRICKS_TOKEN)
+
