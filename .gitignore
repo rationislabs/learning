@@ -208,3 +208,17 @@ __marimo__/
 
 # Credentials: never commit
 secrets
+
+# AI tooling: never commit (Claude Code, Serena, MCP, skills/plugins)
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+.mcp.json
+.serena/
+.superpowers/
+docs/superpowers/
+graphify-out/
+.caveman*
+.headroom/
+.worktrees/

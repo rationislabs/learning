@@ -1,0 +1,30 @@
+[project]
+name = "100-days-python"
+version = "0.1.0"
+description = "My daily projects from the 100 Days of Code Python course"
+requires-python = ">=3.12,<3.13"
+dependencies = []  # add what a day needs: uv add <package>
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+  "pytest>=9.1",
+  "ruff>=0.12",
+  "invoke>=2.2",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--import-mode=importlib -ra"
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["day_*"]  # course exercises stay as written
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
