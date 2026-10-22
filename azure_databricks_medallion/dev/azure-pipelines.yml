@@ -20,7 +20,8 @@ steps:
 # Lint PySpark + SQL in Jupyter notebooks (.ipynb)
 - script: |
     pip install nbqa ruff sqlfluff
-    
+    shopt -s globstar  # without it, ./**/*.ipynb matches one folder level only
+
     # Ruff = Fastest Python/PySpark linter
     nbqa ruff check --line-length=120 ./**/*.ipynb || true
     
